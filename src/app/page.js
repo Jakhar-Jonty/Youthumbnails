@@ -856,7 +856,7 @@ const handleSendMessage = async (e) => {
               )}
             </div>
 
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
+            <div className="absolute left-3 top-2.5 -translate-y-1/2 flex items-center">
               <input
                 type="file"
                 accept="image/*"
@@ -880,7 +880,7 @@ const handleSendMessage = async (e) => {
             <button
               type="submit"
               disabled={isLoading || !currentMessage.trim()}
-              className="absolute p-2 rounded-full right-3 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+              className="absolute p-2 rounded-full right-3 top-2 -translate-y-1/2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
               title="Send message"
               aria-label="Send message"
             >
