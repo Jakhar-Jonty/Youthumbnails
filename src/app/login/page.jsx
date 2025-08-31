@@ -99,7 +99,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ username: "", password: "" })
+  const [form, setForm] = useState({ username: "chaiaurcode", password: "Chai007" })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
