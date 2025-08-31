@@ -40,11 +40,11 @@
 //     });
 //     const buffer = Buffer.from(response.data);
 //     const base64 = buffer.toString('base64');
-    
-//     const mimeType = cloudinaryUrl.includes('.jpg') || cloudinaryUrl.includes('.jpeg') 
-//       ? 'image/jpeg' 
+
+//     const mimeType = cloudinaryUrl.includes('.jpg') || cloudinaryUrl.includes('.jpeg')
+//       ? 'image/jpeg'
 //       : 'image/png';
-    
+
 //     return `data:${mimeType};base64,${base64}`;
 //   } catch (error) {
 //     console.error('Error converting Cloudinary URL to base64:', error);
@@ -57,13 +57,13 @@
 //   console.log("OpenAI Agent analyzing conversation...");
 //   const latestUserMessage = messages[messages.length - 1].content;
 //   const isFirstUserMessage = messages.filter((m) => m.role === "user").length === 1;
-  
+
 //   // Detect if this is an image tweaking request
 //   const isImageTweakRequest = userUploadedImageUrl && ThumbnailUtils.detectImageTweakRequest(latestUserMessage);
-  
+
 //   // Auto-detect image placement if not explicitly mentioned
 //   const imagePlacement = userUploadedImageUrl ? ThumbnailUtils.detectImagePlacement(latestUserMessage) : null;
-  
+
 //   // Detect category
 //   const detectedCategory = ThumbnailPromptEngineer.extractContentCategory(latestUserMessage, "");
 
@@ -80,7 +80,7 @@
 
 // DECISION RULES:
 // 1. If this is the first message and contains basic video topic info, provide a SMART SUMMARY instead of asking questions
-// 2. If user uploaded image and wants tweaking, proceed to generate 
+// 2. If user uploaded image and wants tweaking, proceed to generate
 // 3. If message is too vague (less than 5 words), ask for clarification
 // 4. Otherwise, provide smart summary and quick confirmation
 
@@ -91,7 +91,7 @@
 // {
 //   "nextStep": "ask_clarification" | "smart_summary" | "generate_images",
 //   "response": "your response text",
-//   "reasoning": "brief explanation", 
+//   "reasoning": "brief explanation",
 //   "thumbnailType": "landscape" | "vertical",
 //   "imagePlacement": "${imagePlacement}",
 //   "detectedCategory": "${detectedCategory}",
@@ -109,7 +109,7 @@
 //     });
 
 //     const decision = JSON.parse(response.choices[0].message.content);
-    
+
 //     // Generate smart summary if needed
 //     if (decision.nextStep === "smart_summary") {
 //       decision.response = ThumbnailQuestionnaire.generateQuickConfirmation(
@@ -119,18 +119,18 @@
 //         decision.imagePlacement
 //       );
 //     }
-    
+
 //     // If user confirms or we have enough info, prepare for generation
 //     const confirmationWords = ["yes", "create", "generate", "go", "make", "perfect", "sounds good", "go ahead"];
 //     const isConfirmation = confirmationWords.some(word => latestUserMessage.toLowerCase().includes(word));
-    
+
 //     if (decision.nextStep === "smart_summary" && isConfirmation) {
 //       decision.nextStep = "generate_images";
-      
+
 //       // Preserve the original context and add any new style requests
 //       const originalMessage = messages.find(m => m.role === "user" && m.content.length > 10)?.content || latestUserMessage;
 //       let enhancedMessage = originalMessage;
-      
+
 //       // Check if user added style preferences in confirmation
 //       if (latestUserMessage.toLowerCase().includes("1980")) {
 //         enhancedMessage += " with 1980s retro aesthetic and vintage styling";
@@ -141,24 +141,24 @@
 //       if (latestUserMessage.toLowerCase().includes("modern")) {
 //         enhancedMessage += " with modern contemporary styling";
 //       }
-      
+
 //       // Update the message for prompt generation
 //       decision.originalMessage = enhancedMessage;
 //     }
-    
+
 //     // If generating images, create the final prompt
 //     if (decision.nextStep === "generate_images") {
-//       const userContext = ""; 
-      
+//       const userContext = "";
+
 //       // Use the enhanced message that preserves original context + new style requests
 //       const messageForPrompt = decision.originalMessage || latestUserMessage;
-      
+
 //       // Determine thumbnail type
 //       decision.thumbnailType = ThumbnailPromptEngineer.determineThumbnailType(
 //         messageForPrompt,
 //         userContext
 //       );
-      
+
 //       // Create enhanced prompt with preserved category and topic context
 //       decision.finalPrompt = await ThumbnailPromptEngineer.enhancePrompt(
 //         messageForPrompt,
@@ -168,7 +168,7 @@
 //         decision.imagePlacement,
 //         decision.isImageTweakRequest
 //       );
-      
+
 //       // Apply category-specific enhancements using detected category
 //       if (decision.detectedCategory && decision.detectedCategory !== "general") {
 //         decision.finalPrompt = ThumbnailPromptEngineer.getContentCategoryPrompt(
@@ -176,7 +176,7 @@
 //           decision.finalPrompt
 //         );
 //       }
-      
+
 //       // Optimize for clickthrough
 //       decision.finalPrompt = await ThumbnailOptimizer.optimizeForClickthrough(
 //         decision.finalPrompt,
@@ -203,18 +203,18 @@
 // // Enhanced Gemini Image Generator with better image integration
 // async function geminiImageGenerator(finalPrompt, thumbnailType, userUploadedImageUrl, imagePlacement, isImageTweakRequest = false) {
 //   console.log("Gemini generating images with enhanced prompt:", finalPrompt);
-  
+
 //   try {
 //     const isVertical = thumbnailType === "vertical";
 //     const aspectRatio = isVertical ? "9:16" : "16:9";
-    
+
 //     // Create enhanced prompt based on Gemini Image Generation API guidelines
 //     let enhancedPrompt = `Create a professional YouTube thumbnail image.
 
 // CONTENT DESCRIPTION: ${finalPrompt}
 
 // TECHNICAL SPECIFICATIONS:
-// - Aspect ratio: ${aspectRatio} 
+// - Aspect ratio: ${aspectRatio}
 // - High contrast, vibrant colors optimized for YouTube interface
 // - Bold, eye-catching design that works at small thumbnail sizes
 // - Clear focal points and visual hierarchy
@@ -236,7 +236,7 @@
 //     } else if (userUploadedImageUrl && imagePlacement) {
 //       enhancedPrompt += `
 
-// IMAGE INTEGRATION INSTRUCTIONS: 
+// IMAGE INTEGRATION INSTRUCTIONS:
 // - Seamlessly integrate the user-provided image into the ${imagePlacement} of the composition
 // - User image should be prominently featured and well-integrated with overall design
 // - Create visual harmony between user image and generated thumbnail elements
@@ -266,7 +266,7 @@
 //       model: "google/gemini-2.5-flash-image-preview:free",
 //       messages: [
 //         {
-//           role: "user", 
+//           role: "user",
 //           content: messageContent,
 //         },
 //       ],
@@ -283,11 +283,11 @@
 //         const img = result.images[i];
 //         const base64Data = img.image_url.url.split(",")[1];
 //         const buffer = Buffer.from(base64Data, "base64");
-        
+
 //         // Upload to Cloudinary
 //         const cloudinaryResult = await uploadToCloudinary(buffer);
 //         generatedImageUrls.push(cloudinaryResult.secure_url);
-        
+
 //         console.log(`Image ${i + 1} uploaded to Cloudinary: ${cloudinaryResult.secure_url}`);
 //       }
 //     }
@@ -298,7 +298,7 @@
 
 //     console.log(`Successfully generated and uploaded ${generatedImageUrls.length} images`);
 //     return generatedImageUrls;
-    
+
 //   } catch (error) {
 //     console.error("Gemini generation error:", error);
 //     throw new Error(`Failed to generate images: ${error.message}`);
@@ -394,12 +394,12 @@
 //         content: agentDecision.response,
 //       });
 //     } else if (agentDecision.nextStep === "generate_images") {
-//       const promptMessage = agentDecision.isImageTweakRequest 
+//       const promptMessage = agentDecision.isImageTweakRequest
 //         ? `Perfect! I'll enhance your uploaded image and create a professional thumbnail with it. Generating now...`
 //         : `Perfect! Creating your ${agentDecision.detectedCategory} thumbnail about ${agentDecision.originalMessage || latestUserMessage}...`;
-      
+
 //       currentChat.messages.push({ role: "assistant", content: promptMessage });
-      
+
 //       try {
 //         const imageUrls = await geminiImageGenerator(
 //           agentDecision.finalPrompt,
@@ -408,12 +408,12 @@
 //           agentDecision.imagePlacement,
 //           agentDecision.isImageTweakRequest
 //         );
-        
+
 //         if (imageUrls.length > 0) {
 //           const responseText = agentDecision.isImageTweakRequest
 //             ? `Here's your enhanced image as a professional thumbnail! I've improved the lighting, colors, and composition while keeping your photo recognizable.`
 //             : `Here are your professionally generated ${agentDecision.detectedCategory} thumbnails! Click any thumbnail to view full size or download.`;
-          
+
 //           currentChat.messages.push({
 //             role: "assistant",
 //             content: responseText,
@@ -439,7 +439,7 @@
 
 //     await currentChat.save();
 //     return NextResponse.json(currentChat);
-    
+
 //   } catch (error) {
 //     console.error("Chat API error:", error);
 //     return NextResponse.json(
@@ -482,7 +482,6 @@
 // // // // ******************************************************************************************* // // // /
 // // // // ******************************************************************************************* // // // /
 
-
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Chat from "@/models/Chat";
@@ -519,19 +518,20 @@ async function getUserId(req) {
 async function cloudinaryUrlToBase64(cloudinaryUrl) {
   try {
     const response = await axios.get(cloudinaryUrl, {
-      responseType: 'arraybuffer'
+      responseType: "arraybuffer",
     });
     const buffer = Buffer.from(response.data);
-    const base64 = buffer.toString('base64');
-    
+    const base64 = buffer.toString("base64");
+
     // Determine MIME type from URL or default to PNG
-    const mimeType = cloudinaryUrl.includes('.jpg') || cloudinaryUrl.includes('.jpeg') 
-      ? 'image/jpeg' 
-      : 'image/png';
-    
+    const mimeType =
+      cloudinaryUrl.includes(".jpg") || cloudinaryUrl.includes(".jpeg")
+        ? "image/jpeg"
+        : "image/png";
+
     return `data:${mimeType};base64,${base64}`;
   } catch (error) {
-    console.error('Error converting Cloudinary URL to base64:', error);
+    console.error("Error converting Cloudinary URL to base64:", error);
     throw error;
   }
 }
@@ -540,7 +540,7 @@ async function cloudinaryUrlToBase64(cloudinaryUrl) {
 async function openAIAgent(messages, userUploadedImageUrl, userName) {
   console.log("OpenAI Agent analyzing conversation...");
   const latestUserMessage = messages[messages.length - 1].content;
-  
+
   const agentPrompt = `You are an expert YouTube thumbnail creation assistant. Analyze the conversation and decide the next step.
 
 USER: ${userName}
@@ -581,11 +581,11 @@ Respond in JSON format:
     });
 
     const decision = JSON.parse(response.choices[0].message.content);
-    
+
     // If generating images, create the final prompt
     if (decision.nextStep === "generate_images") {
       const userContext = ""; // No external context for now
-      
+
       // Determine thumbnail type if not specified
       if (!decision.thumbnailType || decision.thumbnailType === "both") {
         decision.thumbnailType = ThumbnailPromptEngineer.determineThumbnailType(
@@ -593,7 +593,7 @@ Respond in JSON format:
           userContext
         );
       }
-      
+
       // Create enhanced prompt
       decision.finalPrompt = await ThumbnailPromptEngineer.enhancePrompt(
         latestUserMessage,
@@ -602,15 +602,18 @@ Respond in JSON format:
         decision.thumbnailType,
         decision.imagePlacement
       );
-      
+
       // Apply category-specific enhancements
-      if (decision.detectedCategory && decision.detectedCategory !== "general") {
+      if (
+        decision.detectedCategory &&
+        decision.detectedCategory !== "general"
+      ) {
         decision.finalPrompt = ThumbnailPromptEngineer.getContentCategoryPrompt(
           decision.detectedCategory,
           decision.finalPrompt
         );
       }
-      
+
       // Optimize for clickthrough
       decision.finalPrompt = await ThumbnailOptimizer.optimizeForClickthrough(
         decision.finalPrompt,
@@ -628,19 +631,24 @@ Respond in JSON format:
       finalPrompt: simplePrompt,
       thumbnailType: "landscape",
       reasoning: "Fell back to simple generation due to agent error.",
-      imagePlacement: userUploadedImageUrl ? "center" : null
+      imagePlacement: userUploadedImageUrl ? "center" : null,
     };
   }
 }
 
 // Gemini Image Generator using OpenRouter
-async function geminiImageGenerator(finalPrompt, thumbnailType, userUploadedImageUrl, imagePlacement) {
+async function geminiImageGenerator(
+  finalPrompt,
+  thumbnailType,
+  userUploadedImageUrl,
+  imagePlacement
+) {
   console.log("Gemini generating images with prompt:", finalPrompt);
-  
+
   try {
     const isVertical = thumbnailType === "vertical";
     const aspectRatio = isVertical ? "9:16" : "16:9";
-    
+
     // Enhanced prompt with technical specifications and placement instructions
     let enhancedPrompt = `Create a professional YouTube thumbnail image.
 CONTENT: ${finalPrompt}
@@ -649,7 +657,9 @@ TECHNICAL SPECIFICATIONS:
 - High contrast, vibrant colors optimized for YouTube interface
 - Bold, eye-catching design that works at small sizes
 - Clear focal points and readable text elements
-- Professional composition for ${isVertical ? "YouTube Shorts" : "standard YouTube videos"}
+- Professional composition for ${
+      isVertical ? "YouTube Shorts" : "standard YouTube videos"
+    }
 - Scroll-stopping and click-worthy design
 - Style: Modern, attention-grabbing, professional`;
 
@@ -664,7 +674,7 @@ TECHNICAL SPECIFICATIONS:
       {
         type: "text",
         text: enhancedPrompt,
-      }
+      },
     ];
 
     // Add user image if provided
@@ -697,12 +707,16 @@ TECHNICAL SPECIFICATIONS:
         const img = result.images[i];
         const base64Data = img.image_url.url.split(",")[1];
         const buffer = Buffer.from(base64Data, "base64");
-        
+
         // Upload to Cloudinary
         const cloudinaryResult = await uploadToCloudinary(buffer);
         generatedImageUrls.push(cloudinaryResult.secure_url);
-        
-        console.log(`Image ${i + 1} uploaded to Cloudinary: ${cloudinaryResult.secure_url}`);
+
+        console.log(
+          `Image ${i + 1} uploaded to Cloudinary: ${
+            cloudinaryResult.secure_url
+          }`
+        );
       }
     }
 
@@ -710,9 +724,10 @@ TECHNICAL SPECIFICATIONS:
       throw new Error("No images were generated successfully.");
     }
 
-    console.log(`Successfully generated and uploaded ${generatedImageUrls.length} images`);
+    console.log(
+      `Successfully generated and uploaded ${generatedImageUrls.length} images`
+    );
     return generatedImageUrls;
-    
   } catch (error) {
     console.error("Gemini generation error:", error);
     throw new Error(`Failed to generate images: ${error.message}`);
@@ -800,7 +815,7 @@ export async function POST(req) {
     } else if (agentDecision.nextStep === "generate_images") {
       const promptMessage = `Perfect! I have all the details I need. Generating your thumbnails now...`;
       currentChat.messages.push({ role: "assistant", content: promptMessage });
-      
+
       try {
         const imageUrls = await geminiImageGenerator(
           agentDecision.finalPrompt,
@@ -808,7 +823,7 @@ export async function POST(req) {
           currentChat.userUploadedImageUrl,
           agentDecision.imagePlacement
         );
-        
+
         if (imageUrls.length > 0) {
           const responseText = `Here are your professionally generated thumbnails! Click any thumbnail to view full size or download.`;
           currentChat.messages.push({
@@ -818,8 +833,8 @@ export async function POST(req) {
             thumbnailData: {
               category: agentDecision.detectedCategory,
               type: agentDecision.thumbnailType,
-              placement: agentDecision.imagePlacement
-            }
+              placement: agentDecision.imagePlacement,
+            },
           });
         } else {
           throw new Error("No images were generated");
@@ -828,14 +843,14 @@ export async function POST(req) {
         console.error("Image generation failed:", imageError);
         currentChat.messages.push({
           role: "assistant",
-          content: "I encountered an issue while generating your thumbnails. The image generation service may be temporarily busy. Please try again in a moment, or try rephrasing your request.",
+          content:
+            "I encountered an issue while generating your thumbnails. The image generation service may be temporarily busy. Please try again in a moment, or try rephrasing your request.",
         });
       }
     }
 
     await currentChat.save();
     return NextResponse.json(currentChat);
-    
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(

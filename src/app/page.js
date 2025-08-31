@@ -379,7 +379,7 @@ export default function Home() {
     setSidebarOpen(false)
   }
 
-const handleSendMessage = async (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
     if (!currentMessage.trim() || isLoading) return
 
@@ -436,6 +436,7 @@ const handleSendMessage = async (e) => {
       setIsLoading(false)
     }
   }
+
 
   const handleLogout = async () => {
     try {
@@ -640,115 +641,138 @@ const handleSendMessage = async (e) => {
             </div>
           ) : (
             <div className="space-y-6">
-              {currentChat.messages.map((msg, index) => (
-                <div key={msg._id || index} className={`flex gap-4 items-start`}>
-                  <div
-                    className={`p-2 rounded-full flex-shrink-0 ${msg.role === "user" ? "bg-red-600" : "bg-gray-700"}`}
-                  >
-                    {msg.role === "user" ? <UserIcon /> : <BotIcon />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                    {msg.imageUrls && msg.imageUrls.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {/* Thumbnails Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {msg.imageUrls.map((url, i) => (
-                            <div key={i} className="group relative bg-gray-800 rounded-lg overflow-hidden">
-                              <img
-                                src={url || "/placeholder.svg?height=600&width=1067&query=Generated%20thumbnail"}
-                                alt={`Generated thumbnail ${i + 1}`}
-                                className="w-full h-auto rounded-lg hover:opacity-90 transition-opacity"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <div className="flex gap-2">
-                                  <button
-                                    onClick={() => window.open(url, "_blank")}
-                                    className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
-                                    title="View full size"
-                                    aria-label="View full size image"
-                                  >
-                                    <span className="sr-only">View full size</span>
-                                    <ImageIcon />
-                                  </button>
-                                  <button
-                                    onClick={() => downloadImage(url, `thumbnail_${i + 1}.png`)}
-                                    className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 focus-visible:ring-offset-gray-900"
-                                    title="Download image"
-                                    aria-label="Download image"
-                                  >
-                                    <span className="sr-only">Download</span>
-                                    <DownloadIcon />
-                                  </button>
-                                  <button
-                                    onClick={() => copyImageToClipboard(url, i)}
-                                    className={`p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900 ${
-                                      copySuccess[i]
-                                        ? "bg-green-600 text-white"
-                                        : "bg-red-600 hover:bg-red-700 text-white"
-                                    }`}
-                                    title={copySuccess[i] ? "Copied!" : "Copy to clipboard"}
-                                    aria-label={copySuccess[i] ? "Image copied" : "Copy image to clipboard"}
-                                  >
-                                    <span className="sr-only">{copySuccess[i] ? "Copied" : "Copy to clipboard"}</span>
-                                    <CopyIcon />
-                                  </button>
+              {currentChat.messages.map((msg, index) => {
+                const isUser = msg.role === "user"
+                return (
+                  <div key={msg._id || index} className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
+                    <div
+                      className={`p-2 rounded-full flex-shrink-0 ${isUser ? "bg-red-600" : "bg-gray-700"}`}
+                      aria-hidden="true"
+                    >
+                      {isUser ? <UserIcon /> : <BotIcon />}
+                    </div>
+
+                    <div className={`max-w-[80%] ${isUser ? "text-right" : "text-left"}`}>
+                      <div
+                        className={`rounded-2xl px-4 py-3 ${
+                          isUser ? "bg-red-600 text-white" : "bg-gray-800 text-gray-100"
+                        }`}
+                      >
+                        <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+
+                        {/* Show the uploaded photo inside the user's chat bubble if present (optimistic display) */}
+                        {isUser && msg.localImage && (
+                          <img
+                            src={
+                              msg.localImage || "/placeholder.svg?height=200&width=200&query=User%20uploaded%20image"
+                            }
+                            alt="Uploaded attachment"
+                            className={`mt-3 w-full max-w-xs rounded-lg ${isUser ? "border border-red-300/40" : "border border-gray-700"}`}
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
+
+                      {/* Generated images section (kept outside bubble for cleaner layout, usually on assistant messages) */}
+                      {msg.imageUrls && msg.imageUrls.length > 0 && (
+                        <div className={`mt-4 space-y-4 ${isUser ? "ml-auto" : ""}`}>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {msg.imageUrls.map((url, i) => (
+                              <div key={i} className="group relative bg-gray-800 rounded-lg overflow-hidden">
+                                <img
+                                  src={url || "/placeholder.svg?height=600&width=1067&query=Generated%20thumbnail"}
+                                  alt={`Generated thumbnail ${i + 1}`}
+                                  className="w-full h-auto rounded-lg hover:opacity-90 transition-opacity"
+                                  loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => window.open(url, "_blank")}
+                                      className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
+                                      title="View full size"
+                                      aria-label="View full size image"
+                                    >
+                                      <span className="sr-only">View full size</span>
+                                      <ImageIcon />
+                                    </button>
+                                    <button
+                                      onClick={() => downloadImage(url, `thumbnail_${i + 1}.png`)}
+                                      className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 focus-visible:ring-offset-gray-900"
+                                      title="Download image"
+                                      aria-label="Download image"
+                                    >
+                                      <span className="sr-only">Download</span>
+                                      <DownloadIcon />
+                                    </button>
+                                    <button
+                                      onClick={() => copyImageToClipboard(url, i)}
+                                      className={`p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900 ${
+                                        copySuccess[i]
+                                          ? "bg-green-600 text-white"
+                                          : "bg-red-600 hover:bg-red-700 text-white"
+                                      }`}
+                                      title={copySuccess[i] ? "Copied!" : "Copy to clipboard"}
+                                      aria-label={copySuccess[i] ? "Image copied" : "Copy image to clipboard"}
+                                    >
+                                      <span className="sr-only">{copySuccess[i] ? "Copied" : "Copy to clipboard"}</span>
+                                      <CopyIcon />
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
 
-                        {/* Action Buttons for Multiple Images */}
-                        <div className="flex flex-wrap gap-3 items-center">
-                          <button
-                            onClick={() => downloadAllAsZip(msg.imageUrls)}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
-                            aria-label="Download all images as ZIP"
-                          >
-                            <ZipIcon />
-                            Download All as ZIP
-                          </button>
+                          <div className="flex flex-wrap gap-3 items-center">
+                            <button
+                              onClick={() => downloadAllAsZip(msg.imageUrls)}
+                              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
+                              aria-label="Download all images as ZIP"
+                            >
+                              <ZipIcon />
+                              Download All as ZIP
+                            </button>
 
-                          <button
-                            onClick={() => {
-                              const shareText = `Check out these thumbnails I created with AI! ${window.location.href}`
-                              if (navigator.share) {
-                                navigator.share({
-                                  title: "AI Generated Thumbnails",
-                                  text: shareText,
-                                  url: window.location.href,
-                                })
-                              } else {
-                                navigator.clipboard.writeText(shareText)
-                                alert("Share link copied to clipboard!")
-                              }
-                            }}
-                            className="flex items-center gap-2 px-4 py-2 border border-gray-600 hover:border-gray-500 bg-transparent rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
-                            aria-label="Share thumbnails"
-                          >
-                            <ShareIcon />
-                            Share
-                          </button>
-                        </div>
+                            <button
+                              onClick={() => {
+                                const shareText = `Check out these thumbnails I created with AI! ${window.location.href}`
+                                if (navigator.share) {
+                                  navigator.share({
+                                    title: "AI Generated Thumbnails",
+                                    text: shareText,
+                                    url: window.location.href,
+                                  })
+                                } else {
+                                  navigator.clipboard.writeText(shareText)
+                                  alert("Share link copied to clipboard!")
+                                }
+                              }}
+                              className="flex items-center gap-2 px-4 py-2 border border-gray-600 hover:border-gray-500 bg-transparent rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 focus-visible:ring-offset-gray-900"
+                              aria-label="Share thumbnails"
+                            >
+                              <ShareIcon />
+                              Share
+                            </button>
+                          </div>
 
-                        <div className="bg-gray-800 rounded-lg p-4">
-                          <p className="text-sm text-gray-300 mb-2">
-                            <span className="text-red-400 font-medium">Pro Tips:</span>
-                          </p>
-                          <ul className="text-xs text-gray-400 space-y-1">
-                            <li>• Click thumbnails to view full size</li>
-                            <li>• Use download for high-quality images</li>
-                            <li>• Copy to clipboard for quick sharing</li>
-                            <li>• Download ZIP for all variations at once</li>
-                          </ul>
+                          <div className="bg-gray-800 rounded-lg p-4">
+                            <p className="text-sm text-gray-300 mb-2">
+                              <span className="text-red-400 font-medium">Pro Tips:</span>
+                            </p>
+                            <ul className="text-xs text-gray-400 space-y-1">
+                              <li>• Click thumbnails to view full size</li>
+                              <li>• Use download for high-quality images</li>
+                              <li>• Copy to clipboard for quick sharing</li>
+                              <li>• Download ZIP for all variations at once</li>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
               {isLoading && (
                 <div className="flex gap-4 items-start">
                   <div className="p-2 rounded-full bg-gray-700">
@@ -856,7 +880,7 @@ const handleSendMessage = async (e) => {
               )}
             </div>
 
-            <div className="absolute left-3 top-2.5 -translate-y-1/2 flex items-center">
+            <div className="absolute left-3 top-3 -translate-y-1/2 flex items-center">
               <input
                 type="file"
                 accept="image/*"
@@ -880,7 +904,7 @@ const handleSendMessage = async (e) => {
             <button
               type="submit"
               disabled={isLoading || !currentMessage.trim()}
-              className="absolute p-2 rounded-full right-3 top-2 -translate-y-1/2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+              className="absolute p-2 rounded-full right-3 top-3 -translate-y-1/2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
               title="Send message"
               aria-label="Send message"
             >
