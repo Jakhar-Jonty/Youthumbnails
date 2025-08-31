@@ -322,7 +322,7 @@ export default function Home() {
                             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
                                 <div className="bg-gray-800 p-6 rounded-lg">
                                     <h3 className="font-semibold text-blue-400 mb-2">Smart Conversations</h3>
-                                    <p className="text-sm text-gray-300">I'll ask questions to understand your vision and create the perfect thumbnail.</p>
+                                    <p className="text-sm text-gray-300">{"I'll ask questions to understand your vision and create the perfect thumbnail."}</p>
                                 </div>
                                 <div className="bg-gray-800 p-6 rounded-lg">
                                     <h3 className="font-semibold text-purple-400 mb-2">Image Integration</h3>
